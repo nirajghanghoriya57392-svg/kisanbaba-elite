@@ -1,78 +1,89 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Calculator, Sprout, Info, ArrowRight } from 'lucide-react';
-import SEO from '../components/SEO';
+import { motion } from 'framer-motion';
+import { Leaf, FlaskConical, Beaker, ArrowLeft } from 'lucide-react';
 import './MicroCalculators.css';
 
-const FertilizerCalculator = () => {
-  const { t, i18n } = useTranslation();
-  const [inputs, setInputs] = useState({ area: '', crop: 'wheat' });
-  const [result, setResult] = useState(null);
-
-  const calculate = () => {
-    // Basic NPK calculation logic
-    const area = parseFloat(inputs.area) || 0;
-    const n = area * 50;
-    const p = area * 25;
-    const k = area * 25;
-    setResult({ n, p, k });
+export default function FertilizerCalculator() {
+  const { t } = useTranslation();
+  const [crop, setCrop] = useState('paddy');
+  const [area, setArea] = useState(1); 
+  
+  // Basic NPK recommendation logic per Acre (ICAR Baselines)
+  const recommendations = {
+     paddy: { name: t('crops.paddy', { defaultValue: "Paddy (Kharif)" }), urea: 2.5, ssp: 3, mop: 1, spacing: "20x15 cm" },
+     wheat: { name: t('crops.wheat', { defaultValue: "Wheat" }), urea: 2.5, ssp: 3, mop: 1.5, spacing: "22.5 cm rows" },
+     maize: { name: t('crops.maize', { defaultValue: "Maize" }), urea: 3, ssp: 2.5, mop: 1, spacing: "60x20 cm" },
+     sugarcane: { name: t('crops.sugarcane', { defaultValue: "Sugarcane" }), urea: 6, ssp: 4, mop: 2, spacing: "90 cm rows" },
+     cotton: { name: t('crops.cotton', { defaultValue: "Cotton (Bt)" }), urea: 3, ssp: 2, mop: 1, spacing: "90x90 cm" },
+     tomato: { name: t('crops.tomato', { defaultValue: "Tomato" }), urea: 4, ssp: 3.5, mop: 2, spacing: "60x45 cm" }
   };
 
+  const currentRec = recommendations[crop];
+
   return (
-    <div className="micro-calc-container">
-      <SEO title="Fertilizer Calculator - KisanBaba" />
-      <header className="calc-header">
-        <Calculator size={32} color="var(--prosperity-gold)" />
-        <h1>{i18n.language === 'hi' ? 'खाद कैलकुलेटर' : 'Fertilizer Calculator'}</h1>
-      </header>
+    <div className="micro-calc-wrapper">
+       <header className="micro-header">
+           <Link to="/" className="back-btn">
+              <ArrowLeft size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 
+              {t('calc.back', { defaultValue: 'Back' })}
+           </Link>
+           <div className="kb-logo">KisanBaba 🧪</div>
+       </header>
+       
+       <main className="micro-main">
+            <motion.div 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="glass-card full-width-card"
+            >
+                <h1 className="micro-title">{t('calc.fert.title', { defaultValue: 'Nutrient Intelligence' })}</h1>
+                <p className="micro-subtitle">{t('calc.fert.subtitle', { defaultValue: 'Precision NPK modeling for optimal yield and cost reduction.' })}</p>
+                
+                <div className="config-panel">
+                    <div className="config-block">
+                        <label className="rural-label">{t('calc.common.selectCrop', { defaultValue: 'Select Crop' })}</label>
+                        <select className="rural-select" value={crop} onChange={e => setCrop(e.target.value)}>
+                           {Object.keys(recommendations).map(k => (
+                              <option key={k} value={k}>{recommendations[k].name}</option>
+                           ))}
+                        </select>
+                    </div>
+                    
+                    <div className="config-block">
+                        <label className="rural-label">{t('calc.common.farmArea', { defaultValue: 'Farm Area' })}: <span className="rural-value">{area} {t('calc.common.acres', { defaultValue: 'Acres' })}</span></label>
+                        <input type="range" min="0.5" max="50" step="0.5" value={area} onChange={e => setArea(parseFloat(e.target.value))} />
+                    </div>
+                </div>
 
-      <main className="calc-card glass-card">
-        <div className="input-row">
-          <label>{i18n.language === 'hi' ? 'फसल चुनें' : 'Select Crop'}</label>
-          <select onChange={(e) => setInputs({...inputs, crop: e.target.value})}>
-            <option value="wheat">Wheat / गेहूं</option>
-            <option value="paddy">Paddy / धान</option>
-            <option value="mustard">Mustard / सरसों</option>
-          </select>
-        </div>
-        <div className="input-row">
-          <label>{i18n.language === 'hi' ? 'क्षेत्रफल (एकड़)' : 'Area (Acre)'}</label>
-          <input 
-            type="number" 
-            placeholder="e.g. 5" 
-            value={inputs.area}
-            onChange={(e) => setInputs({...inputs, area: e.target.value})}
-          />
-        </div>
-        <button className="calc-btn" onClick={calculate}>
-          {i18n.language === 'hi' ? 'गणना करें' : 'Calculate NPK'}
-        </button>
-
-        {result && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="result-display">
-            <div className="res-item">
-              <span className="res-label">Nitrogen (N)</span>
-              <span className="res-val">{result.n} kg</span>
-            </div>
-            <div className="res-item">
-              <span className="res-label">Phosphorus (P)</span>
-              <span className="res-val">{result.p} kg</span>
-            </div>
-            <div className="res-item">
-              <span className="res-label">Potassium (K)</span>
-              <span className="res-val">{result.k} kg</span>
-            </div>
-          </motion.div>
-        )}
-      </main>
-
-      <section className="calc-tips glass-card">
-        <h4><Info size={16} /> Application Tip</h4>
-        <p>Apply 50% of Nitrogen as basal dose during sowing. Use remaining as top-dressing after first irrigation.</p>
-      </section>
+                <div className="results-grid">
+                    <div className="bag-card">
+                       <div className="bag-icon"><Beaker size={48} color="#166534" /></div>
+                       <h4>{t('calc.fert.urea', { defaultValue: 'Urea (Nitrogen)' })}</h4>
+                       <div className="bag-count">{Math.ceil(currentRec.urea * area)}</div>
+                       <small>{t('calc.fert.bags45', { defaultValue: 'Bags (45kg)' })}</small>
+                    </div>
+                    <div className="bag-card">
+                       <div className="bag-icon"><FlaskConical size={48} color="#9a3412" /></div>
+                       <h4>{t('calc.fert.ssp', { defaultValue: 'SSP (Phosphate)' })}</h4>
+                       <div className="bag-count">{Math.ceil(currentRec.ssp * area)}</div>
+                       <small>{t('calc.fert.bags50', { defaultValue: 'Bags (50kg)' })}</small>
+                    </div>
+                    <div className="bag-card">
+                       <div className="bag-icon"><Leaf size={48} color="#b91c1c" /></div>
+                       <h4>{t('calc.fert.mop', { defaultValue: 'MOP (Potash)' })}</h4>
+                       <div className="bag-count">{Math.ceil(currentRec.mop * area)}</div>
+                       <small>{t('calc.fert.bags50', { defaultValue: 'Bags (50kg)' })}</small>
+                    </div>
+                </div>
+                
+                <div className="pro-tip">
+                   <strong>💡 {t('calc.common.proTip', { defaultValue: 'Agronomy Insight' })}:</strong> 
+                   {t('calc.fert.tip', { defaultValue: 'Apply nitrogen in splits for 30% better absorption. Basal, Tillering, and Panicle stages are critical.' })}
+                </div>
+            </motion.div>
+        </main>
     </div>
   );
-};
-
-export default FertilizerCalculator;
+}

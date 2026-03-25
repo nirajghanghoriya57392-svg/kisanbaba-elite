@@ -1,67 +1,83 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Calculator, Shovel, Info, ArrowRight } from 'lucide-react';
-import SEO from '../components/SEO';
+import { motion } from 'framer-motion';
+import { Sprout, ArrowLeft, Ruler, Wind } from 'lucide-react';
 import './MicroCalculators.css';
 
-const SeedRateCalculator = () => {
-  const { t, i18n } = useTranslation();
-  const [inputs, setInputs] = useState({ area: '', crop: 'wheat' });
-  const [result, setResult] = useState(null);
+export default function SeedRateCalculator() {
+  const { t } = useTranslation();
+  const [crop, setCrop] = useState('wheat');
+  const [area, setArea] = useState(1); 
+  const [method, setMethod] = useState('line');
 
-  const calculate = () => {
-    const area = parseFloat(inputs.area) || 0;
-    const rate = inputs.crop === 'wheat' ? 40 : (inputs.crop === 'paddy' ? 8 : 2);
-    setResult(area * rate);
+  // Seed rate baselines in KG per Acre
+  const seedRates = {
+     wheat: { name: t('crops.wheat', { defaultValue: "Wheat" }), line: 40, broadcast: 50 },
+     paddy: { name: t('crops.paddy_direct', { defaultValue: "Paddy (Direct Seeded)" }), line: 12, broadcast: 15 },
+     maize: { name: t('crops.maize', { defaultValue: "Maize" }), line: 8, broadcast: 10 },
+     chickpea: { name: t('crops.chickpea', { defaultValue: "Gram (Chana)" }), line: 30, broadcast: 35 },
+     mustard: { name: t('crops.mustard', { defaultValue: "Mustard" }), line: 2, broadcast: 2.5 }
   };
 
+  const currentCrop = seedRates[crop];
+  const requiredSeed = (currentCrop[method] * area).toFixed(1);
+
   return (
-    <div className="micro-calc-container">
-      <SEO title="Seed Rate Calculator - KisanBaba" />
-      <header className="calc-header">
-        <Calculator size={32} color="var(--nature-green)" />
-        <h1>{i18n.language === 'hi' ? 'बीज दर कैलकुलेटर' : 'Seed Rate Calculator'}</h1>
-      </header>
+    <div className="micro-calc-wrapper seed-bg">
+       <header className="micro-header">
+           <Link to="/" className="back-btn">
+              <ArrowLeft size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> 
+              {t('calc.back', { defaultValue: 'Back' })}
+           </Link>
+           <div className="kb-logo">KisanBaba 🌱</div>
+       </header>
+       
+       <main className="micro-main">
+            <motion.div 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="glass-card full-width-card"
+            >
+                <h1 className="micro-title">{t('calc.seed.title', { defaultValue: 'Seed Density & Quantity' })}</h1>
+                <p className="micro-subtitle">{t('calc.seed.subtitle', { defaultValue: 'Optimize your sowing patterns. Minimize seed waste. Maximize germination density.' })}</p>
+                
+                <div className="config-panel">
+                    <div className="config-block">
+                        <label className="rural-label">{t('calc.common.selectSeed', { defaultValue: 'Select Seed Type' })}</label>
+                        <select className="rural-select" value={crop} onChange={e => setCrop(e.target.value)}>
+                           {Object.keys(seedRates).map(k => (
+                              <option key={k} value={k}>{seedRates[k].name}</option>
+                           ))}
+                        </select>
+                    </div>
+                    
+                    <div className="config-block">
+                        <label className="rural-label">{t('calc.seed.method', { defaultValue: 'Sowing Method' })}</label>
+                        <select className="rural-select" value={method} onChange={e => setMethod(e.target.value)}>
+                           <option value="line">{t('calc.seed.methodLine', { defaultValue: 'Line Sowing / Drill' })}</option>
+                           <option value="broadcast">{t('calc.seed.methodBroadcast', { defaultValue: 'Broadcasting (Chhitkawan)' })}</option>
+                        </select>
+                    </div>
+                    
+                    <div className="config-block" style={{gridColumn: '1 / -1'}}>
+                        <label className="rural-label">{t('calc.common.farmArea', { defaultValue: 'Farm Area' })}: <span className="rural-value">{area} {t('calc.common.acres', { defaultValue: 'Acres' })}</span></label>
+                        <input type="range" min="0.5" max="50" step="0.5" value={area} onChange={e => setArea(parseFloat(e.target.value))} />
+                    </div>
+                </div>
 
-      <main className="calc-card glass-card">
-        <div className="input-row">
-          <label>{i18n.language === 'hi' ? 'फसल चुनें' : 'Select Crop'}</label>
-          <select onChange={(e) => setInputs({...inputs, crop: e.target.value})}>
-            <option value="wheat">Wheat / गेहूं</option>
-            <option value="paddy">Paddy / धान</option>
-            <option value="mustard">Mustard / सरसों</option>
-          </select>
-        </div>
-        <div className="input-row">
-          <label>{i18n.language === 'hi' ? 'क्षेत्रफल (एकड़)' : 'Area (Acre)'}</label>
-          <input 
-            type="number" 
-            placeholder="e.g. 5" 
-            value={inputs.area}
-            onChange={(e) => setInputs({...inputs, area: e.target.value})}
-          />
-        </div>
-        <button className="calc-btn" onClick={calculate}>
-          {i18n.language === 'hi' ? 'गणना करें' : 'Calculate Quantity'}
-        </button>
-
-        {result && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="result-display">
-            <div className="res-summary">
-              <span className="res-label">Total Seeds Required:</span>
-              <span className="res-val">{result} kg</span>
-            </div>
-          </motion.div>
-        )}
-      </main>
-
-      <section className="calc-tips glass-card">
-        <h4><Info size={16} /> Elite Advice</h4>
-        <p>Ensure seed treatment with Rhizobium or Azotobacter before sowing to increase germination by 20%.</p>
-      </section>
+                <div className="giant-result">
+                   <h4>{t('calc.seed.resultTitle', { defaultValue: 'Recommended Seed Quantity' })}</h4>
+                   <div className="giant-number">{requiredSeed} <span className="unit">KG</span></div>
+                   <p>{t('calc.seed.resultDesc', { defaultValue: 'Calculated using standardized agronomic density models.' })}</p>
+                </div>
+                
+                <div className="pro-tip warning-tip">
+                   <strong>⚠️ {t('calc.seed.treatmentTitle', { defaultValue: 'Essential Treatment:' })}</strong> 
+                   {t('calc.seed.treatmentText', { defaultValue: 'Treat seeds with Trichoderma (5g/kg) and standard fungicide to prevent soil-borne pathogens.' })}
+                </div>
+            </motion.div>
+        </main>
     </div>
   );
-};
-
-export default SeedRateCalculator;
+}
