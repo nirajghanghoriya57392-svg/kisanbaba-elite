@@ -1,0 +1,225 @@
+.vision-container {
+  background: #000;
+  color: white;
+  overflow-x: hidden;
+}
+
+.vision-hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.15), transparent 70%);
+  text-align: center;
+  padding: 0 20px;
+}
+
+.vision-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 214, 0, 0.1);
+  color: var(--prosperity-gold);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 1000;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255, 214, 0, 0.2);
+  margin-bottom: 32px;
+}
+
+.vision-hero h1 {
+  font-size: clamp(2.5rem, 10vw, 5rem);
+  font-weight: 1000;
+  line-height: 1;
+  letter-spacing: -3px;
+  margin-bottom: 24px;
+}
+
+.vision-hero h1 span {
+  background: linear-gradient(135deg, var(--nature-green), var(--prosperity-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.vision-hero p {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  max-width: 700px;
+  margin: 0 auto 60px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.mouse-wheel {
+  display: block;
+  width: 24px;
+  height: 40px;
+  border: 2px solid var(--text-muted);
+  border-radius: 12px;
+  margin: 0 auto 12px;
+  position: relative;
+}
+
+.mouse-wheel::after {
+  content: '';
+  width: 4px; height: 8px;
+  background: var(--prosperity-gold);
+  position: absolute;
+  top: 8px; left: 8px;
+  border-radius: 2px;
+  animation: scrollMouse 1.5s infinite;
+}
+
+@keyframes scrollMouse {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(15px); opacity: 0; }
+}
+
+/* PRINCIPLES */
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 20px;
+}
+
+.principle-card {
+  padding: 40px;
+  text-align: left;
+}
+
+.principle-icon {
+  width: 50px;
+  height: 50px;
+  color: var(--nature-green);
+  margin-bottom: 24px;
+}
+
+.principle-card h3 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.principle-card p {
+  color: var(--text-muted);
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* MANIFESTO */
+.vision-manifesto {
+  background: rgba(16, 185, 129, 0.05);
+  padding: 120px 20px;
+  text-align: center;
+}
+
+.manifesto-content h2 {
+  font-size: 3rem;
+  font-weight: 1000;
+  margin-bottom: 60px;
+}
+
+.manifesto-content h2 span { color: var(--prosperity-gold); }
+
+.manifesto-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.manifesto-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.manifesto-item h4 {
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.manifesto-item p {
+  color: var(--text-muted);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* CTA */
+.vision-cta {
+  padding: 120px 20px;
+  text-align: center;
+}
+
+.cta-box {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 60px;
+}
+
+.cta-box h2 {
+  font-size: 3rem;
+  font-weight: 1000;
+  margin-bottom: 16px;
+}
+
+.cta-box h2 span { color: var(--nature-green); }
+
+.cta-box p {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.vision-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--prosperity-gold);
+  color: black;
+  text-decoration: none;
+  padding: 18px 40px;
+  border-radius: 50px;
+  font-weight: 900;
+  font-size: 1.1rem;
+  transition: 0.3s;
+}
+
+.vision-cta-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 40px rgba(234, 179, 8, 0.4);
+}
+
+/* FOOTER */
+.vision-footer {
+  padding: 60px 20px;
+  text-align: center;
+  border-top: 1px solid var(--glass-border);
+}
+
+.v-logo {
+  font-size: 1.5rem;
+  font-weight: 1000;
+  color: var(--nature-green);
+}
+
+.v-footer-content p {
+  color: var(--text-muted);
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .manifesto-grid { grid-template-columns: 1fr; }
+  .principles-grid { grid-template-columns: 1fr; }
+  .cta-box { padding: 40px 20px; }
+}
