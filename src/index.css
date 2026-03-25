@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Premium Nature Palette */
+  --nature-green: #00C853;
+  --nature-dark: #1B5E20;
+  --prosperity-gold: #FFD600;
+  --earth-brown: #3E2723;
+  --soil-brown: #3E2723;
+  --solar-orange: #FF6D00;
+  --forest-green: #00C853;
+  --terra-cotta: #E64A19;
+  
+  /* Semantic Tokens - Mobile Optimized */
+  --bg-main: #fcfdfd;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --text-main: #101828;
+  --text-muted: #667085;
+  
+  /* Glassmorphism Elite */
+  --glass-blur: 16px;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  
+  /* Gradients */
+  --premium-gradient: linear-gradient(135deg, #00C853 0%, #1B5E20 100%);
+  --accent-gradient: linear-gradient(135deg, #FFD600 0%, #FF6D00 100%);
+}
+
+[data-theme='dark'] {
+  --bg-main: #0B0F19;
+  --bg-card: rgba(17, 24, 39, 0.8);
+  --text-main: #F9FAFB;
+  --text-muted: #9CA3AF;
+  
+  --glass-bg: rgba(17, 24, 39, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+* {
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(0, 200, 83, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(255, 214, 0, 0.05) 0%, transparent 40%);
+  background-attachment: fixed;
+  color: var(--text-main);
+  margin: 0; 
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
