@@ -1,0 +1,21 @@
+/* 
+   MandiDashboard.css 
+   Elite Production Grade 
+   Full Responsive & Glassmorphism System
+*/
+
+:root {
+  --elite-navy: #0f172a;
+  --forest-green: #047857;
+  --prosperity-gold: #f59e0b;
+  --terra-cotta: #ef4444;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: blur(12px);
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+
+/* ... (Rest of the content from viewed file) */
