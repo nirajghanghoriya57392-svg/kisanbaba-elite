@@ -1,141 +1,150 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { 
-  BookOpen, 
+  ArrowLeft, 
   Search, 
-  Leaf, 
-  Sprout, 
-  Droplets, 
-  Dna, 
-  TrendingUp, 
-  Calendar,
+  Filter, 
+  Lock, 
   ChevronRight,
-  Filter
+  TrendingUp,
+  Sparkles
 } from 'lucide-react';
-import SEO from '../components/SEO';
+import libraryData from '../data/farming_library.json';
 import './ProgressiveFarmingLibrary.css';
 
-const ProgressiveFarmingLibrary = () => {
-  const { t, i18n } = useTranslation();
-  const [filter, setFilter] = useState('all');
+const categories = [
+  "All",
+  "High-Yield & Exotic Fruits",
+  "High-Value Vegetables & Polyhouse",
+  "Spices & Condiments",
+  "Medicinal & Aromatic Plants",
+  "Commercial Floricultural",
+  "Timber & Long-Term Cash Crops"
+];
 
-  const models = [
-    {
-      id: 1,
-      title: 'ZBNF (Zero Budget Natural Farming)',
-      category: 'Organic',
-      complexity: 'Medium',
-      icon: <Leaf />,
-      benefit: '↓ 90% Costs',
-      desc: 'Master the art of Jeevamrutha and Bijamrutha for chemical-free high yield.'
-    },
-    {
-      id: 2,
-      title: 'Vertical Hydroponics',
-      category: 'Tech',
-      complexity: 'High',
-      icon: <Sprout />,
-      benefit: '↑ 5x Yield',
-      desc: 'Precise nutrient control in vertical layers. Ideal for high-value strawberries and leafy greens.'
-    },
-    {
-      id: 3,
-      title: 'Precision Drip Irrigation',
-      category: 'Hydrology',
-      complexity: 'Low',
-      icon: <Droplets />,
-      benefit: '↓ 60% Water',
-      desc: 'Automated water delivery system synchronized with soil moisture sensors.'
-    },
-    {
-      id: 4,
-      title: 'Multi-Layer Cropping',
-      category: 'Traditional',
-      complexity: 'Medium',
-      icon: <Calendar />,
-      benefit: '↑ 300% Income',
-      desc: 'Grow 4-5 crops in the same field at different heights for maximum space utility.'
+export default function ProgressiveFarmingLibrary() {
+  const { t } = useTranslation();
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredItems = libraryData.filter(item => {
+    const matchesCategory = selectedCategory === "All" || item.category === selectedCategory;
+    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          item.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05
+      }
     }
-  ];
+  };
 
-  const filteredModels = filter === 'all' ? models : models.filter(m => m.category.toLowerCase() === filter.toLowerCase());
+  const itemAnim = {
+    hidden: { y: 20, opacity: 0 },
+    show: { y: 0, opacity: 1 }
+  };
 
   return (
-    <div className="library-container">
-      <SEO 
-        title={i18n.language === 'hi' ? 'प्रगतिशील खेती लाइब्रेरी - किसानबाबा' : 'Progressive Farming Library - KisanBaba'}
-        description="Comprehensive guide to high-yield, modern agricultural practices."
-      />
-
-      <header className="lib-header">
-         <div className="lib-badge"><BookOpen size={14} /> ELITE KNOWLEDGE HUB</div>
-         <h1>{i18n.language === 'hi' ? 'उन्नत खेती मॉडल' : 'Advanced Farming Models'}</h1>
-         <p>{i18n.language === 'hi' ? 'अपनी उपज और कमाई बढ़ाने के लिए आधुनिक तरीकें सीखें।' : 'Master the mechanics of high-yield institutional farming.'}</p>
+    <div className="library-wrapper">
+      <header className="library-header">
+        <Link to="/" className="back-link">
+          <ArrowLeft size={20} /> {t('calc.back', { defaultValue: 'Back' })}
+        </Link>
+        <div className="header-content">
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="library-title"
+          >
+            Elite <span>Farming</span> Library
+          </motion.h1>
+          <p className="library-subtitle">50+ Progressive Farming Models for the Modern Indian Farmer</p>
+        </div>
       </header>
 
-      <div className="lib-controls glass-card">
-         <div className="search-bar">
-           <Search size={20} />
-           <input type="text" placeholder="Search models (e.g. Mushroom, Floriculture)..." />
-         </div>
-         <div className="filter-scroll">
-           {['All', 'Organic', 'Tech', 'Hydrology', 'Traditional'].map(cat => (
-             <button 
-              key={cat} 
-              className={`filter-btn ${filter === cat.toLowerCase() ? 'active' : ''}`}
-              onClick={() => setFilter(cat.toLowerCase())}
-             >
-               {cat}
-             </button>
-           ))}
-         </div>
+      <div className="library-controls glass-card">
+        <div className="search-box">
+          <Search size={20} />
+          <input 
+            type="text" 
+            placeholder="Search crop or practice..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="filter-scroll">
+          {categories.map(cat => (
+            <button 
+              key={cat}
+              className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <main className="models-grid">
-         <AnimatePresence mode='popLayout'>
-           {filteredModels.map((model, idx) => (
-             <motion.div 
-               key={model.id}
-               layout
-               initial={{ opacity: 0, scale: 0.9 }}
-               animate={{ opacity: 1, scale: 1 }}
-               exit={{ opacity: 0, scale: 0.9 }}
-               className="model-card glass-card"
-             >
-               <div className="model-icon-wrap" style={{ '--accent-color': idx % 2 === 0 ? 'var(--nature-green)' : 'var(--prosperity-gold)' }}>
-                 {model.icon}
-               </div>
-               <div className="model-content">
-                 <div className="model-meta">
-                   <span className="cat">{model.category}</span>
-                   <span className="comp">Difficulty: {model.complexity}</span>
-                 </div>
-                 <h3>{model.title}</h3>
-                 <p>{model.desc}</p>
-                 <div className="benefit-tag">
-                   <TrendingUp size={14} /> {model.benefit}
-                 </div>
-               </div>
-               <button className="open-model-btn">
-                 Study Model <ChevronRight size={18} />
-               </button>
-             </motion.div>
-           ))}
-         </AnimatePresence>
-      </main>
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="library-grid"
+      >
+        <AnimatePresence>
+          {filteredItems.map(item => (
+            <motion.div 
+              key={item.id}
+              variants={itemAnim}
+              layout
+              exit={{ opacity: 0, scale: 0.9 }}
+              className={`library-card glass-card ${item.status}`}
+            >
+              <div className="card-badge-row">
+                <span className="category-tag">{item.category}</span>
+                {item.status === 'coming-soon' ? (
+                  <span className="status-tag soon"><Lock size={12} /> Coming Soon</span>
+                ) : (
+                  <span className="status-tag active"><Sparkles size={12} /> Live</span>
+                )}
+              </div>
+              
+              <div className="card-main">
+                <div className="crop-icon">{item.icon}</div>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
 
-      <section className="certified-notice glass-card">
-         <div className="notice-inner">
-           <div className="cert-icon">📜</div>
-           <div className="cert-text">
-             <h4>KisanBaba Certified Training</h4>
-             <p>Our models are verified by top agricultural scientists and successful progressive farmers.</p>
-           </div>
-         </div>
-      </section>
+              <div className="card-footer">
+                {item.status === 'published' ? (
+                  <Link to={item.path} className="lib-action-btn primary">
+                    {item.buttonText} <ChevronRight size={18} />
+                  </Link>
+                ) : (
+                  <button className="lib-action-btn disabled">
+                    Notify Me <TrendingUp size={16} />
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
+
+      {filteredItems.length === 0 && (
+        <div className="empty-state">
+          <Search size={48} opacity={0.3} />
+          <h3>No matches found</h3>
+          <p>Try searching for different keywords or categories.</p>
+        </div>
+      )}
     </div>
   );
-};
-
-export default ProgressiveFarmingLibrary;
+}
