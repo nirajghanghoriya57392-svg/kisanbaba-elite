@@ -1,0 +1,107 @@
+.ticker-tape-container {
+  background: #0f172a;
+  color: white;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: sticky;
+  top: 72px; /* Below Navbar */
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.navbar.scrolled + .ticker-tape-container {
+  top: 64px;
+}
+
+.ticker-label {
+  background: var(--nature-green);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-weight: 1000;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  gap: 8px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+.ticker-wrapper {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 40px;
+  font-weight: 800;
+  font-size: 1rem;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+.ticker-icon {
+  font-size: 1.4rem;
+}
+
+.ticker-name {
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ticker-mandi {
+  font-size: 0.85rem;
+  color: var(--nature-green);
+  font-weight: 900;
+  opacity: 1;
+}
+
+.ticker-price {
+  font-weight: 900;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.ticker-stats {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-weight: 1000;
+}
+
+.ticker-stats.up { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.ticker-stats.down { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+@media (max-width: 900px) {
+  .ticker-tape-container { height: 48px; top: 72px; }
+  .ticker-label { padding: 0 16px; font-size: 0.7rem; }
+  .ticker-item { padding: 0 24px; font-size: 0.9rem; }
+  .ticker-icon { font-size: 1.1rem; }
+}
