@@ -1,0 +1,241 @@
+.crop-doctor-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.doctor-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.doctor-header h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.doctor-header p {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.upload-zone {
+  min-height: 250px;
+  border: 2px dashed var(--glass-border);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.upload-label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  cursor: pointer;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 40px;
+}
+
+.upload-icon {
+  color: var(--prosperity-gold);
+}
+
+.upload-placeholder span {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.upload-placeholder p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.preview-container {
+  width: 100%;
+  position: relative;
+}
+
+.crop-preview {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.reupload-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.analysis-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(var(--elite-navy-rgb), 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.scanning-line {
+  width: 100%;
+  height: 2px;
+  background: var(--nature-green);
+  box-shadow: 0 0 20px var(--nature-green);
+  position: absolute;
+  top: 0;
+}
+
+/* DIAGNOSIS RESULT */
+.diagnosis-result {
+  margin-top: 24px;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.result-header h3 {
+  flex: 1;
+  font-weight: 900;
+}
+
+.confidence-badge {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--nature-green);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.result-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.result-item .label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.result-item .value {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.treatment-box {
+  background: rgba(234, 179, 8, 0.05);
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.treatment-box h4 {
+  color: var(--prosperity-gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.prevention-box {
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+.prevention-box h4 {
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.expert-connect-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--nature-green), #059669);
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 16px;
+  font-weight: 900;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* COMMON ISSUES */
+.common-issues {
+  margin-top: 40px;
+}
+
+.common-issues h3 {
+  font-size: 1.1rem;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.issues-grid {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.issue-mini-card {
+  flex: 0 0 auto;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 12px 20px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}

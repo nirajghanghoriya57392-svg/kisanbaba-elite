@@ -1,0 +1,250 @@
+.kisanbhai-container {
+  min-height: 100vh;
+  padding: 40px 20px 100px;
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.05), transparent);
+}
+
+.kb-hero {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.kb-header-icon {
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.4));
+}
+
+.kb-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 1000;
+  margin-bottom: 12px;
+}
+
+.kb-tagline {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--prosperity-gold);
+  font-style: italic;
+}
+
+.kb-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* SOS MODULE */
+.sos-module {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(0,0,0,0.4));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  margin-bottom: 32px;
+}
+
+.sos-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.sos-text h3 {
+  font-weight: 950;
+  color: #ef4444;
+  margin-bottom: 4px;
+}
+
+.sos-text p {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sos-trigger-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 16px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+}
+
+/* PLEDGE SECTION */
+.pledge-section {
+  margin-bottom: 48px;
+  border: 1px solid var(--prosperity-gold);
+}
+
+.pledge-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pledge-header h3 {
+  font-weight: 900;
+  color: var(--prosperity-gold);
+}
+
+.pledge-text {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 24px;
+}
+
+.sign-pledge-btn {
+  background: var(--prosperity-gold);
+  color: black;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.pledge-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--nature-green);
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+}
+
+/* FEATURE GRID */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.kb-feature-card {
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.feature-icon-blob {
+  width: 60px;
+  height: 60px;
+  background: rgba(var(--elite-navy-rgb), 0.5);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--prosperity-gold);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.kb-feature-card h4 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.kb-feature-card p {
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.mini-action-btn {
+  background: transparent;
+  border: none;
+  color: var(--prosperity-gold);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+/* SOS MODAL */
+.sos-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.sos-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 32px;
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  text-align: center;
+}
+
+.sos-modal h2 {
+  font-weight: 1000;
+  margin-bottom: 32px;
+}
+
+.contact-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.contact-card {
+  text-decoration: none;
+  background: rgba(255,255,255,0.03);
+  padding: 20px 10px;
+  border-radius: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--glass-border);
+  transition: 0.3s;
+}
+
+.contact-card:hover {
+  background: var(--glass-bg);
+  border-color: var(--prosperity-gold);
+  transform: translateY(-5px);
+}
+
+.contact-card span {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.close-modal-btn {
+  background: rgba(255,255,255,0.05);
+  color: white;
+  border: 1px solid var(--glass-border);
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .sos-content {
+    flex-direction: column;
+    text-align: center;
+  }
+}
