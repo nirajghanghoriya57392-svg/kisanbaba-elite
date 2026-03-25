@@ -1,355 +1,404 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
-import { 
-  CloudSun, 
-  Sprout, 
-  TrendingUp, 
-  MapPin, 
-  Mic, 
-  Search, 
-  Bell, 
-  ArrowRight, 
-  Cpu, 
-  Stethoscope, 
-  BookOpen, 
-  Coins,
-  Wind,
-  Droplets,
-  Calendar,
-  Zap,
-  ChevronRight,
-  Info,
-  Menu,
-  X,
-  Smartphone,
-  ShieldCheck,
-  Award,
-  Users,
-  MessageSquare
-} from 'lucide-react';
-import { fetchWeatherShieldData } from '../utils/api';
-import { speakText, stopSpeech } from '../utils/speech';
 import SEO from '../components/SEO';
+import { 
+  Mic, 
+  BarChart2, 
+  CloudSun, 
+  Heart, 
+  Calculator, 
+  Stethoscope, 
+  FileText, 
+  PawPrint, 
+  Rss, 
+  ArrowRight,
+  ChevronRight,
+  TrendingUp,
+  TrendingDown,
+  Info,
+  Calendar,
+  Building2,
+  Sparkles
+} from 'lucide-react';
+import cropsData from '../data/crops.json';
+import { fetchMandiRates, fetchWeatherAlerts } from '../utils/api';
+import SuccessStories from '../components/SuccessStories';
 import './HomePage.css';
 
-// Mock weather data fallback
-const FALLBACK_WEATHER = {
-  temp: 32,
-  condition: 'Sunny',
-  humidity: 45,
-  wind: 12,
-  alerts: []
-};
-
-const HomePage = () => {
+export default function HomePage() {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-  const [weather, setWeather] = useState(null);
   const [isListening, setIsListening] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [micText, setMicText] = useState("Tap and tell us what you need...");
+  const [mandiData, setMandiData] = useState([]);
+  const [weatherData, setWeatherData] = useState(null);
 
   useEffect(() => {
-    const getWeatherData = async () => {
-      try {
-        const data = await fetchWeatherShieldData('Indore', 'Wheat');
-        setWeather({
-          temp: data.rawData.temp,
-          condition: data.rawData.rainProb > 40 ? 'Rainy' : 'Clear',
-          humidity: data.rawData.humidity,
-          wind: data.rawData.windSpeed,
-          alerts: data.panels.find(p => p.id === 'emergency')?.items || []
-        });
-      } catch (err) {
-        setWeather(FALLBACK_WEATHER);
-      }
-    };
-    getWeatherData();
-  }, []);
+    async function loadDashboards() {
+       // Mocking specific user data for attractive home page
+       const mockMandi = [
+         { id: 1, commodity: t('crops.tomato.name') || 'Tomato', price: 1827, change: 37, trend: 'up' },
+         { id: 2, commodity: 'Onion', price: 1527, change: 38, trend: 'up' },
+         { id: 3, commodity: 'Potato', price: 927, change: 39, trend: 'up' },
+         { id: 4, commodity: 'Paddy (Dhan)', price: 2127, change: 40, trend: 'up' }
+       ];
+       setMandiData(mockMandi);
 
-  const handleVoiceCommand = () => {
-    setIsListening(true);
-    speakText(t('home.voice.listening', { defaultValue: 'Listening... How can I help you today?' }), i18n.language === 'hi' ? 'hi-IN' : 'en-US');
-    
-    // Simulate speech recognition end
-    setTimeout(() => {
-      setIsListening(false);
-      stopSpeech();
-      // Mock action
-      speakText(t('home.voice.response', { defaultValue: 'Opening Mandi Dashboard for current rates.' }), i18n.language === 'hi' ? 'hi-IN' : 'en-US');
-      setTimeout(() => navigate('/mandi'), 1500);
-    }, 3000);
+       // Mocking specific weather data
+       setWeatherData({
+         temp: 28,
+         location: t('home.weather.location'),
+         icon: '⛅',
+         alertText: t('home.weather.alertHeader'),
+         actionableAdvice: i18n.language === 'hi' 
+           ? "आज अपनी कटी हुई फसल को खुले में न छोड़ें। ढक्कर रखें।" 
+           : "Don't leave harvested crops in the open today. Keep them covered.",
+         isFavorable: false
+       });
+    }
+    loadDashboards();
+  }, [i18n.language, t]);
+
+  const handleMicClick = () => {
+    if (!isListening) {
+      setIsListening(true);
+      setMicText("Listening... Speak now");
+      setTimeout(() => {
+        setIsListening(false);
+        setMicText("Processing query...");
+        setTimeout(() => setMicText("Tap and tell us what you need..."), 1500);
+      }, 3000);
+    }
   };
 
-  const menuItems = [
-    { id: 'mandi', icon: <TrendingUp />, label: t('nav.mandi'), path: '/mandi', color: '#10b981' },
-    { id: 'weather', icon: <CloudSun />, label: t('nav.weather'), path: '/weather', color: '#3b82f6' },
-    { id: 'doctor', icon: <Stethoscope />, label: t('nav.cropDoctor'), path: '/crop-doctor', color: '#ef4444' },
-    { id: 'calc', icon: <Cpu />, label: t('nav.calculator'), path: '/calc/fertilizer', color: '#f59e0b' },
-    { id: 'library', icon: <BookOpen />, label: t('nav.library'), path: '/library', color: '#8b5cf6' },
-    { id: 'animal', icon: <Award />, label: t('nav.animal'), path: '/animal', color: '#ec4899' },
-    { id: 'kisanbhai', icon: <Users />, label: t('nav.kisanbhai'), path: '/kisanbhai', color: '#06b6d4' },
-    { id: 'news', icon: <Bell />, label: t('nav.news'), path: '/news', color: '#f97316' },
-  ];
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 }
+  };
 
   return (
-    <div className="home-wrapper">
+    <div className="kisanbaba-wrapper">
       <SEO 
-        title={i18n.language === 'hi' ? 'किसानबाबा - उन्नत कृषि' : 'KisanBaba - Advanced Farming'}
+        title={i18n.language === 'hi' ? 'किसानबाबा - उन्नत कृषि और मंडी भाव' : 'KisanBaba - Advanced Farming & Mandi Prices'}
         description={i18n.language === 'hi' 
-          ? 'किसानबाबा: भारतीय किसानों के लिए एआई-संचालित मंडी भाव, मौसम पूर्वानुमान और फसल सुरक्षा मंच।' 
-          : 'KisanBaba: AI-powered market rates, weather forecasts, and crop protection for Indian farmers.'}
+          ? 'किसानबाबा: भारत का सबसे स्मार्ट मंडी एआई। लाइव मंडी भाव, मौसम कवच और कृषि सलाहकार।' 
+          : 'KisanBaba: India\'s Smartest Mandi AI. Live mandi prices, weather shield, and agri-advisory.'}
       />
-
-      {/* Top Navigation */}
-      <nav className="top-nav">
-        <div className="nav-container">
-          <div className="brand-group">
-            <span className="kb-logo">KisanBaba 🪴</span>
-          </div>
-          <div className="nav-actions">
-             <button className="lang-toggle" onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'hi' : 'en')}>
-               {i18n.language === 'en' ? 'हिंदी' : 'English'}
-             </button>
-             <Link to="/admin" className="admin-link">🛡️</Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <header className="home-hero">
-        <div className="hero-content">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="hero-badge"
-          >
-            <Zap size={14} fill="currentColor" />
-            {t('home.hero.badge', { defaultValue: 'Next-Gen Farming Command Center' })}
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, scale: 0.9 }}
+      
+      <main className="kb-main">
+         <motion.section 
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="hero-title"
+            transition={{ duration: 0.8 }}
+            className="kb-hero"
           >
-            {i18n.language === 'hi' ? 'खेती की नयी ' : 'The Future of '} <span>{i18n.language === 'hi' ? 'शक्ति' : 'Smart Farming'}</span>
-          </motion.h1>
-          <p className="hero-subtitle">
-            {t('home.hero.subtitle', { defaultValue: 'AI-Enhanced market intelligence and precision agriculture in your pocket.' })}
-          </p>
-          
-          <div className="hero-search">
-            <Search className="search-icon" />
-            <input 
-              type="text" 
-              placeholder={t('home.search.placeholder', { defaultValue: 'Search Mandi rates, Crop issues...' })}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button className="voice-search-btn" onClick={handleVoiceCommand}>
-              <Mic fill={isListening ? 'var(--nature-green)' : 'none'} />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Dashboard Grid */}
-      <main className="dashboard-container">
-        {/* Weather Quick Widget */}
-        <section className="dashboard-row">
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="weather-widget glass-card"
-            onClick={() => navigate('/weather')}
-          >
-            <div className="widget-header">
-              <span className="live-tag">LIVE</span>
-              <h3>{t('home.weather.title', { defaultValue: 'Mausam Kavach' })}</h3>
-            </div>
-            {weather ? (
-              <div className="weather-data">
-                <div className="main-temp">
-                  <span className="temp-val">{weather.temp}°</span>
-                  <span className="condition">{weather.condition}</span>
-                </div>
-                <div className="metri-grid">
-                  <div className="mini-metric">
-                    <Droplets size={16} />
-                    <span>{weather.humidity}%</span>
-                  </div>
-                  <div className="mini-metric">
-                    <Wind size={16} />
-                    <span>{weather.wind} km/h</span>
-                  </div>
-                </div>
-                {weather.alerts.length > 0 && (
-                  <div className="weather-alert-mini">
-                    <AlertTriangle size={14} />
-                    <span>{weather.alerts[0].name}</span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="loading-shimmer"></div>
-            )}
-            <div className="widget-footer">
-               <span>View Detailed Radar</span>
-               <ChevronRight size={16} />
-            </div>
-          </motion.div>
-
-          {/* Mandi Quick View */}
-          <motion.div 
-            whileHover={{ scale: 1.02 }}
-            className="mandi-widget glass-card"
-            onClick={() => navigate('/mandi')}
-          >
-            <div className="widget-header">
-              <TrendingUp size={20} color="#10b981" />
-              <h3>{t('home.mandi.title', { defaultValue: 'Market Pulse' })}</h3>
-            </div>
-            <div className="price-ticker">
-               <div className="ticker-item">
-                 <span className="crop">Wheat</span>
-                 <span className="price">₹2,450 📈</span>
-               </div>
-               <div className="ticker-item">
-                 <span className="crop">Paddy</span>
-                 <span className="price">₹2,183 📉</span>
-               </div>
-               <div className="ticker-item">
-                 <span className="crop">Mustard</span>
-                 <span className="price">₹5,620 ➖</span>
-               </div>
-            </div>
-            <div className="widget-footer">
-               <span>Open Discovery Engine</span>
-               <ChevronRight size={16} />
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Action Grid */}
-        <section className="action-grid">
-          {menuItems.map((item, idx) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="action-card glass-card"
-              onClick={() => navigate(item.path)}
-              style={{ '--accent-color': item.color }}
+            <motion.h1
+               initial={{ y: 20, opacity: 0 }}
+               animate={{ y: 0, opacity: 1 }}
+               transition={{ delay: 0.2 }}
             >
-              <div className="action-icon">
-                {item.icon}
-              </div>
-              <span className="action-label">{item.label}</span>
+              Kisan<span>Baba</span>
+            </motion.h1>
+            <p>{t('home.hero.subtitle')}</p>
+            
+            <div className="mic-container" onClick={handleMicClick}>
+               <div className={`pulse-ring ${isListening ? 'active' : ''}`}></div>
+               <motion.div 
+                 whileHover={{ scale: 1.05 }}
+                 whileTap={{ scale: 0.95 }}
+                 className="mic-btn"
+               >
+                 <Mic size={40} strokeWidth={2.5} />
+               </motion.div>
+            </div>
+            <motion.span 
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="mic-label"
+            >
+                {isListening ? micText : (i18n.language === 'hi' ? "टैप करें और बोलें..." : t('home.hero.micPrompt'))}
+            </motion.span>
+         </motion.section>
+
+          <motion.section 
+           variants={containerVariants}
+           initial="hidden"
+           animate="visible"
+           className="kb-dashboard-grid"
+         >
+            <motion.div 
+              variants={itemVariants} 
+              className="glass-card home-mandi-card"
+            >
+               <div className="card-header-main">
+                 <div className="title-row">
+                   <BarChart2 size={24} color="var(--nature-green)" />
+                   <h2>{t('home.mandi.title')}</h2>
+                 </div>
+                 <span className="live-pill">LIVE</span>
+               </div>
+               
+               <div className="mandi-price-list">
+                 {mandiData.map(item => (
+                   <div className="data-row-glow" key={item.id}>
+                     <span className="commodity-label">{item.commodity}</span>
+                     <div className="price-trends">
+                       <span className="price-val">₹{item.price}/q</span>
+                       <div className={`trend-tag-home ${item.trend}`}>
+                          {item.trend === 'up' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                          ₹{item.change}
+                       </div>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+
+               <div className="card-footer-advice">
+                  <p className="advice-text">💡 {t('home.mandi.profitAdvice')}</p>
+               </div>
+
+               <div className="card-actions-home">
+                 <Link to="/mandi-dashboard" className="premium-nav-btn mandi">
+                    {t('home.mandi.exploreBtn')} <ArrowRight size={18}/>
+                 </Link>
+                 <Link to="/mandi-dashboard" className="secondary-text-btn">
+                   {t('home.mandi.exploreBtn')}
+                 </Link>
+               </div>
             </motion.div>
-          ))}
-        </section>
 
-        {/* AI Insight Highlight */}
-        <section className="insight-highlight">
-           <div className="insight-card glass-card">
-              <div className="insight-inner">
-                <div className="insight-icon">🧠</div>
-                <div className="insight-content">
-                  <h4>{t('home.insight.title', { defaultValue: 'Elite Farming Strategy' })}</h4>
-                  <p>{t('home.insight.text', { defaultValue: 'Satellite data shows ideal soil moisture in Indore region. Best time for micronutrient spray for Wheat.' })}</p>
+            <motion.div 
+              variants={itemVariants} 
+              className="glass-card home-weather-card"
+              whileHover={{ scale: 1.02, translateY: -5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+               <div className="card-header-main">
+                 <h2><CloudSun size={24} color="var(--wheat-gold)" /> {t('home.weather.title')}</h2>
+                 <span className="safe-pill">{i18n.language === 'hi' ? 'सुरक्षित' : 'SAFE'}</span>
+               </div>
+
+               {weatherData && (
+                 <>
+                   <div className="weather-display-home">
+                      <div className="weather-massive-icon">
+                         {weatherData.icon}
+                      </div>
+                      <div className="weather-stat-stack">
+                          <div className="temp-big">{weatherData.temp}°C</div>
+                          <div className="loc-small">{weatherData.location}</div>
+                      </div>
+                   </div>
+                   
+                   <div className="home-alert-box">
+                      <div className="alert-header-row">
+                        <Info size={16} /> <strong>{t('home.weather.alertHeader')}:</strong>
+                      </div>
+                      <p className="alert-advice">{weatherData.actionableAdvice}</p>
+                   </div>
+
+                    <div className="card-actions-home">
+                      <Link to="/weather-radar" className="premium-nav-btn weather">
+                        {t('home.weather.exploreBtn')} <ChevronRight size={18}/>
+                      </Link>
+                    </div>
+                 </>
+               )}
+            </motion.div>
+         </motion.section>
+
+         {/* Gateway Links */}
+         <motion.section 
+           variants={containerVariants}
+           initial="hidden"
+           animate="visible"
+           className="quick-links"
+         >
+            <Link to="/mandi-dashboard" className="btn-glass">
+                <div className="icon-box" style={{ background: 'hsla(162, 94%, 18%, 0.1)' }}>
+                  <BarChart2 size={36} color="var(--forest-green)" />
                 </div>
-                <button className="insight-action">
-                  Apply <ArrowRight size={16} />
-                </button>
-              </div>
-           </div>
-        </section>
+                <span>Mandi Bhav</span>
+            </Link>
+            <Link to="/kisan-bhai" className="btn-glass">
+                <div className="icon-box" style={{ background: 'hsla(12, 76%, 55%, 0.1)' }}>
+                  <Heart size={36} color="var(--terra-cotta)" />
+                </div>
+                <span>Kisan Bhai</span>
+            </Link>
+            <a href="#calculators" className="btn-glass">
+                <div className="icon-box" style={{ background: 'hsla(42, 87%, 50%, 0.1)' }}>
+                  <Calculator size={36} color="var(--wheat-gold)" />
+                </div>
+                <span>Calculators</span>
+            </a>
+            <Link to="/news-radar" className="btn-glass">
+                <div className="icon-box" style={{ background: 'hsla(222, 47%, 11%, 0.1)' }}>
+                  <Rss size={36} color="var(--text-main)" />
+                </div>
+                <span>News Radar</span>
+            </Link>
+         </motion.section>
 
-        {/* Feature Teasers */}
-        <section className="feature-teasers">
-           <div className="teaser-card">
-              <div className="teaser-img doctor-bg"></div>
-              <div className="teaser-body">
-                <h3>{t('home.teasers.doctor.title', { defaultValue: 'Crop Doctor AI' })}</h3>
-                <p>{t('home.teasers.doctor.desc', { defaultValue: 'Identify pests and diseases with 98% accuracy.' })}</p>
-                <Link to="/crop-doctor" className="teaser-link">Start Scan</Link>
-              </div>
-           </div>
-           <div className="teaser-card">
-              <div className="teaser-img library-bg"></div>
-              <div className="teaser-body">
-                <h3>{t('home.teasers.lib.title', { defaultValue: 'Agri-Academy' })}</h3>
-                <p>{t('home.teasers.lib.desc', { defaultValue: 'Master 50+ high-yield farming models.' })}</p>
-                <Link to="/library" className="teaser-link">Browse Library</Link>
-              </div>
-           </div>
-        </section>
+         {/* Section 1: Precision Agri-Tools */}
+         <section id="tools" className="kb-calculators">
+            <div className="section-header-row">
+              <h2 className="section-title">Precision Agri-Tools</h2>
+              <p className="section-subtitle">Data-driven tools to minimize cost and maximize input efficiency.</p>
+            </div>
+            <div className="calculator-grid">
+              <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                <Link to="/fertilizer-calculator" className="calc-card" style={{background: 'linear-gradient(135deg, #064e3b, #059669)'}}>
+                     <div className="calc-icon">🧪</div>
+                     <div className="calc-info">
+                         <h3>Fertilizer (NPK)</h3>
+                         <p>Exact bag requirements for your soil</p>
+                     </div>
+                     <ArrowRight className="calc-arrow" />
+                </Link>
+              </motion.div>
+              
+              <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                <Link to="/seed-rate-calculator" className="calc-card" style={{background: 'linear-gradient(135deg, #78350f, #d97706)'}}>
+                     <div className="calc-icon">🌱</div>
+                     <div className="calc-info">
+                         <h3>Seed Rate</h3>
+                         <p>Optimized seed density for maximum yield</p>
+                     </div>
+                     <ArrowRight className="calc-arrow" />
+                </Link>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                <Link to="/crop-doctor" className="calc-card" style={{background: 'linear-gradient(135deg, #1e3a8a, #3b82f6)'}}>
+                     <div className="calc-icon">🩺</div>
+                     <div className="calc-info">
+                         <h3>Crop Doctor</h3>
+                         <p>Instant disease diagnosis via AI</p>
+                     </div>
+                     <ArrowRight className="calc-arrow" />
+                </Link>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                <Link to="/news-radar" className="calc-card" style={{background: 'linear-gradient(135deg, #334155, #64748b)'}}>
+                     <div className="calc-icon">📰</div>
+                     <div className="calc-info">
+                         <h3>News Radar</h3>
+                         <p>Hyper-local agri-news and alerts</p>
+                     </div>
+                     <ArrowRight className="calc-arrow" />
+                </Link>
+              </motion.div>
+            </div>
+         </section>
+
+         {/* Section 2: Elite Farming Models */}
+         <section id="library" className="kb-calculators library-preview-section">
+            <div className="section-header-row">
+              <h2 className="section-title">Elite Farming Models</h2>
+              <p className="section-subtitle">Highly profitable, progressive farming practices to multiply your income.</p>
+            </div>
+            <div className="calculator-grid">
+               <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                <Link to="/farming-library" className="calc-card dragon-featured">
+                     <div className="calc-icon">🌵</div>
+                     <div className="calc-info">
+                         <h3>Dragon Fruit</h3>
+                         <p>₹8-10 Lakh profit per acre. See roadmap.</p>
+                     </div>
+                     <ArrowRight className="calc-arrow" />
+                </Link>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                <Link to="/farming-library" className="calc-card tomato-featured">
+                     <div className="calc-icon">🍅</div>
+                     <div className="calc-info">
+                         <h3>Polyhouse Tomato</h3>
+                         <p>Zero-pest, off-season premium yields.</p>
+                     </div>
+                     <ArrowRight className="calc-arrow" />
+                </Link>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                <Link to="/farming-library" className="calc-card generic-featured">
+                     <div className="calc-icon">🫐</div>
+                     <div className="calc-info">
+                         <h3>Taiwan Guava</h3>
+                         <p>High-density export quality fruit.</p>
+                     </div>
+                     <ArrowRight className="calc-arrow" />
+                </Link>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -10 }} transition={{ type: "spring", stiffness: 300 }}>
+                <Link to="/farming-library" className="calc-card generic-featured">
+                     <div className="calc-icon">🍑</div>
+                     <div className="calc-info">
+                         <h3>Apple Ber</h3>
+                         <p>Low water, high value desert fruit.</p>
+                     </div>
+                     <ArrowRight className="calc-arrow" />
+                </Link>
+              </motion.div>
+            </div>
+
+            <div className="view-all-container">
+               <Link to="/farming-library" className="huge-library-btn">
+                  <Sparkles size={24} />
+                  Open Elite 50-Card Library
+                  <ChevronRight size={24} />
+               </Link>
+            </div>
+         </section>
+
+         <SuccessStories t={t} />
+
+         {/* Govt Schemes Section */}
+         <section id="schemes" className="kb-schemes-preview">
+            <h2 className="section-title">Sarkari Yojna</h2>
+            <div className="kb-dashboard-grid">
+               <motion.div whileHover={{ scale: 1.02 }} className="glass-card scheme-card">
+                  <div className="scheme-status"><Calendar size={18} /> FY 2024-25</div>
+                  <Building2 size={40} color="var(--terra-cotta)" style={{ marginBottom: '20px' }} />
+                  <h3>Kisan Samman Nidhi</h3>
+                  <p>Check your installment status and fix Aadhaar e-KYC errors instantly.</p>
+                  <button className="premium-button">Check Status</button>
+               </motion.div>
+               
+               <motion.div whileHover={{ scale: 1.02 }} className="glass-card scheme-card">
+                  <div className="scheme-status"><TrendingUp size={18} /> Active</div>
+                  <PawPrint size={40} color="var(--forest-green)" style={{ marginBottom: '20px' }} />
+                  <h3>Pashu Kisan Credit Card</h3>
+                  <p>Apply for low-interest loans for cattle and dairy farming.</p>
+                  <button className="premium-button">Learn More</button>
+               </motion.div>
+            </div>
+         </section>
       </main>
-
-      {/* Trust & Stats Section */}
-      <section className="trust-section">
-         <div className="trust-grid">
-           <div className="stat-item">
-             <span className="stat-num">1.2M+</span>
-             <span className="stat-label">Farmers Empowered</span>
-           </div>
-           <div className="stat-item">
-             <span className="stat-num">95%</span>
-             <span className="stat-label">Market Accuracy</span>
-           </div>
-           <div className="stat-item">
-             <span className="stat-num">24/7</span>
-             <span className="stat-label">AI Support</span>
-           </div>
-         </div>
-      </section>
-
-      {/* Footer Branding */}
-      <footer className="home-footer">
-        <div className="footer-content">
-          <div className="footer-branding">
-            <span className="kb-logo">KisanBaba 🌱</span>
-            <p>Made with ❤️ for Indian Farmers</p>
-          </div>
-          <div className="footer-links">
-            <Link to="/vision">AI Vision</Link>
-            <Link to="/admin">Admin Control</Link>
-            <a href="https://t.me/kisanbaba" target="_blank">Telegram Community</a>
-          </div>
-          <p className="copyright">© 2026 KisanBaba Elite. All Rights Reserved.</p>
-        </div>
-      </footer>
-
-      {/* Bottom Bar (Mobile First Navigation) */}
-      <div className="bottom-nav">
-        <Link to="/" className="bnav-item active">
-          <MapPin size={20} />
-          <span>Home</span>
-        </Link>
-        <Link to="/mandi" className="bnav-item">
-          <TrendingUp size={20} />
-          <span>Mandi</span>
-        </Link>
-        <button className="bnav-item mic-center" onClick={handleVoiceCommand}>
-          <div className="mic-circle">
-            <Mic size={24} color="#fff" />
-          </div>
-        </button>
-        <Link to="/weather" className="bnav-item">
-          <CloudSun size={20} />
-          <span>Weather</span>
-        </Link>
-        <Link to="/crop-doctor" className="bnav-item">
-          <Stethoscope size={20} />
-          <span>Doctor</span>
-        </Link>
-      </div>
+      
+      <style>{`
+        .trend-tag { 
+          display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 8px; font-size: 0.85rem; font-weight: 800;
+        }
+        .trend-tag.up { background: hsla(162, 94%, 18%, 0.1); color: var(--forest-green); }
+        .trend-tag.down { background: hsla(12, 76%, 55%, 0.1); color: var(--terra-cotta); }
+        .text-link { color: var(--forest-green); text-decoration: none; font-weight: 800; display: flex; align-items: center; gap: 4px; margin-top: 20px; font-size: 0.95rem; }
+        .scheme-status { font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+        .premium-button { background: var(--forest-green); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .premium-button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px hsla(162, 94%, 18%, 0.3); }
+      `}</style>
     </div>
   );
-};
-
-export default HomePage;
+}
