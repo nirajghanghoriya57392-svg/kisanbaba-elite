@@ -1,0 +1,32 @@
+[
+  {
+    "id": "soybean-pro",
+    "name": "Soybean (Pioneer-93)",
+    "variety": "JS-20-34",
+    "type": "Cereal",
+    "growthDays": 90,
+    "idealTemp": "25-32°C",
+    "waterNeed": "Medium",
+    "yieldPerAcre": "8-12 Quintals",
+    "msp": 4600,
+    "costPerAcre": 12000,
+    "marketDemand": "High",
+    "nutrients": { "N": 20, "P": 60, "K": 40 },
+    "diseases": ["Yellow Mosaic Virus", "Girdle Beetle"],
+    "agronomy": "Line sowing at 30x10 cm recommended. Pre-emergence herbicide mandatory."
+  },
+  {
+    "id": "wheat-sharbati",
+    "name": "Wheat (Sharbati Gold)",
+    "variety": "C-306",
+    "type": "Cereal",
+    "growthDays": 120,
+    "idealTemp": "15-25°C",
+    "waterNeed": "Regular",
+    "yieldPerAcre": "18-22 Quintals",
+    "msp": 2275,
+    "costPerAcre": 15000,
+    "marketDemand": "Premium",
+    "nutrients": { "N": 120, "P": 60, "K": 40 }
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "matrix": [
+    {
+      "commodity": "Soyabean",
+      "target_district": "Indore",
+      "current_avg": 5328,
+      "forecast_peak": 5850,
+      "timeframe": "21 Days",
+      "confidence": 92,
+      "reason": "Lower arrival forecast from Ujjain belt. Export demand rising.",
+      "advice": "HOLD for 2 weeks. Sell 50% at 5700+."
+    },
+    {
+      "commodity": "Wheat",
+      "target_district": "Delhi",
+      "current_avg": 2425,
+      "forecast_peak": 2600,
+      "timeframe": "45 Days",
+      "confidence": 85,
+      "reason": "Open market sale policy delay. Local stock draining.",
+      "advice": "SELL now if quality is average. HOLD for A+ grade."
+    }
+  ],
+  "global_sentiment": "BULLISH"
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "title": "High-Yield Dragon Fruit (Hylocereus)",
+    "category": "High-Yield & Exotic Fruits",
+    "description": "Premium exotic farming with 3x ROI compared to traditional cereals. Requires trellis support and minimal water.",
+    "icon": "🌵",
+    "status": "published",
+    "buttonText": "View Model",
+    "path": "/library/dragon-fruit"
+  },
+  {
+    "id": "2",
+    "title": "Commercial Hydroponic Lettuce",
+    "category": "High-Value Vegetables & Polyhouse",
+    "description": "Zero-soil precision farming for urban premium markets. Year-round production (12 harvests).",
+    "icon": "🥬",
+    "status": "coming-soon",
+    "buttonText": "Locked",
+    "path": "/library/hydroponics"
+  },
+  {
+    "id": "3",
+    "title": "Malabar Neem (Melia Dubia)",
+    "category": "Timber & Long-Term Cash Crops",
+    "description": "Fast-growing timber for plywood industry. Harvestable in 5-7 years with 5L+ potential per acre.",
+    "icon": "🌳",
+    "status": "published",
+    "buttonText": "View Model",
+    "path": "/library/malabar-neem"
+  }
+]

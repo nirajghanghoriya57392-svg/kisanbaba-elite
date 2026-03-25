@@ -1,0 +1,23 @@
+{
+  "Crops": {
+    "Soybean": {
+      "National_MSP": 4600,
+      "National_A2_FL": 3029,
+      "National_C2": 4331,
+      "State_Specific": {
+        "MP": { "C2": 4450, "Yield": 12.5 },
+        "Maharashtra": { "C2": 4200, "Yield": 14.2 }
+      }
+    },
+    "Wheat": {
+      "National_MSP": 2275,
+      "National_A2_FL": 1128,
+      "National_C2": 1735
+    },
+    "Onion": {
+      "National_MSP": 0,
+      "National_C2": 1250,
+      "Trade_Floor": 1100
+    }
+  }
+}
