@@ -29,6 +29,7 @@ if (!SUPABASE_URL || !SUPABASE_KEY || !OGD_API_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const TEST_MODE = process.env.KISANBABA_TEST === 'true';
+const HI_PRECISION = process.env.KISANBABA_PRECISION === 'high';
 
 // Robust Fetch Check
 if (typeof fetch === 'undefined') {
@@ -74,20 +75,29 @@ async function throttledFetch(url, delay = 1000) {
  * Main Run Function
  */
 async function runSync() {
-  console.log("--- KISANBABA SYNC ENGINE STARTING (FREE TIER OPTIMIZED) ---");
+  console.log(`--- KISANBABA SYNC ENGINE STARTING (${HI_PRECISION ? 'HIGH PRECISION' : 'STANDARD'}) ---`);
   const now = new Date();
-  
+  const utcHour = now.getUTCHours();
+
+  // We only run the Heavy/Deep Sync (Mandi + CEDA) once a day to save API credits and avoid redundant scans.
+  // Window: 14:00 - 15:00 UTC (Approx 7:30 PM - 8:30 PM IST)
+  const isMainSyncWindow = (utcHour >= 14 && utcHour <= 15);
+
   // 35-Day Rolling Window for Free Tier Sustainability
   const cutoffDate = new Date(now.getTime() - (35 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0];
   
-  console.log(`[PURGE] Removing records before ${cutoffDate}...`);
-  await purgeOldData(cutoffDate);
+  if (isMainSyncWindow || !HI_PRECISION) {
+    console.log(`[PURGE] Starting 35-day data maintenance (Cutoff: ${cutoffDate})...`);
+    await purgeOldData(cutoffDate);
 
-  console.log("[SYNC] Starting Mandi Price Sync (Top 30 Crops Only)...");
-  await syncMandiData();
+    console.log("[SYNC] Starting Mandi Price Sync (Top 30 Crops Only)...");
+    await syncMandiData();
 
-  console.log("[SYNC] Starting CEDA Retail Price Sync...");
-  await syncCedaRetailPrices();
+    console.log("[SYNC] Starting CEDA Retail Price Sync...");
+    await syncCedaRetailPrices();
+  } else {
+    console.log("[SKIP] Main Data Sync (Mandi/CEDA) already complete for today. Skipping to High-Precision Weather...");
+  }
 
   console.log("[SYNC] Starting Weather History Sync (700+ Districts)...");
   await syncWeatherHistory();
@@ -261,14 +271,20 @@ async function syncWeatherHistory() {
   for (const d of allDistricts) {
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?lat=${d.lat}&lon=${d.lng}&appid=${WEATHER_API_KEY}&units=metric`;
-      const res = await fetch(url); // openweather is fast
+      const res = await throttledFetch(url, 200);
       const data = await res.json();
       
       if (data.main) {
+        // High Precision: Store resolution in hours (YYYY-MM-DD HH:00:00)
+        // This allows us to see the "Peak Heat" vs "Night Cool"
+        const recordedAt = HI_PRECISION 
+          ? new Date().toISOString().replace('T', ' ').substring(0, 13) + ':00:00'
+          : new Date().toISOString().split('T')[0];
+
         await supabase.from('weather_history').upsert({
           state: d.state,
           district: d.district,
-          recorded_at: new Date().toISOString().split('T')[0],
+          recorded_at: recordedAt,
           temp: Math.round(data.main.temp),
           humidity: data.main.humidity,
           condition: data.weather[0].main,
@@ -294,5 +310,6 @@ function formatDate(dateStr) {
 runSync().catch(e => {
   console.error("--- KISANBABA SYNC ENGINE CRASHED ---");
   console.error(e);
+  console.error(JSON.stringify(e, Object.getOwnPropertyNames(e)));
   process.exit(1);
 });
