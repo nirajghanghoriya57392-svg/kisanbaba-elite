@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Upgraded for 2026
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Upgraded for 2026
         with:
-          node-version: '18'
+          node-version: '22' # Upgraded to LTS-22 for Elite 2026 Platform
 
       - name: Install Node Dependencies
         run: npm install
@@ -34,9 +34,9 @@ jobs:
         run: node scripts/kisanbaba_sync_engine.cjs
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Upgraded for 2026
         with:
-          python-version: '3.9'
+          python-version: '3.12' # Upgraded for compatibility
 
       - name: Install Python Dependencies
         run: |
