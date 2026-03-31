@@ -6,6 +6,10 @@ on:
     - cron: '30 14 * * *'
   workflow_dispatch: # Allows manual trigger
 
+# REQUIRED: Enable the runner to push changes back to the repository
+permissions:
+  contents: write
+
 jobs:
   run-ai:
     runs-on: ubuntu-latest
@@ -50,5 +54,5 @@ jobs:
           git config --local user.email "ai-worker@kisanbaba.in"
           git config --local user.name "KisanBaba AI Worker"
           git add public/data/ceda/*.json
-          git commit -m "🤖 Daily AI Intelligence Update [$(date +'%Y-%m-%d')]" || echo "No changes to commit"
+          git commit -m "🤖 Daily AI Intelligence Update [$(date +'%Y-%m-%d')] " || echo "No changes to commit"
           git push
