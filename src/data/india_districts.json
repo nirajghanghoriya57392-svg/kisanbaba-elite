@@ -1,0 +1,13 @@
+{
+  "Andhra Pradesh": [
+    {"district":"Anantapur","lat":14.68,"lng":77.6},
+    {"district":"Chittoor","lat":13.22,"lng":79.1},
+    {"district":"East Godavari","lat":17.0,"lng":81.8}
+  ],
+  "Delhi": [
+    {"district":"New Delhi","lat":28.61,"lng":77.2}
+  ],
+  "Maharashtra": [
+    {"district":"Nashik","lat":19.99,"lng":73.79}
+  ]
+}
