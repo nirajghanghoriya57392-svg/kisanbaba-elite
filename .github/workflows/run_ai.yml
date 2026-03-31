@@ -2,8 +2,8 @@ name: KisanBaba PRO Daily AI Worker
 
 on:
   schedule:
-    # 20:00 IST is 14:30 UTC
-    - cron: '30 14 * * *'
+    # Run every 3 hours to capture Mid-Day Heat and Night Frost (High Precision)
+    - cron: '0 */3 * * *'
   workflow_dispatch: # Allows manual trigger
 
 # REQUIRED: Enable the runner to push changes back to the repository
@@ -15,28 +15,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4 # Upgraded for 2026
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4 # Upgraded for 2026
+        uses: actions/setup-node@v4
         with:
-          node-version: '22' # Upgraded to LTS-22 for Elite 2026 Platform
+          node-version: '22'
 
       - name: Install Node Dependencies
         run: npm install
 
-      - name: 60-Day Rolling Data Sync (APMC + Weather)
+      - name: High-Precision Data Sync (APMC + Weather)
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           VITE_OGD_API_KEY: ${{ secrets.OGD_API_KEY }}
           VITE_OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          KISANBABA_PRECISION: 'high'
         run: node scripts/kisanbaba_sync_engine.cjs
 
       - name: Set up Python
-        uses: actions/setup-python@v5 # Upgraded for 2026
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12' # Upgraded for compatibility
+          python-version: '3.12'
 
       - name: Install Python Dependencies
         run: |
@@ -54,5 +55,5 @@ jobs:
           git config --local user.email "ai-worker@kisanbaba.in"
           git config --local user.name "KisanBaba AI Worker"
           git add public/data/ceda/*.json
-          git commit -m "🤖 Daily AI Intelligence Update [$(date +'%Y-%m-%d')] " || echo "No changes to commit"
+          git commit -m "🤖 High-Precision AI Update [$(date +'%Y-%m-%d %H:%M')] " || echo "No changes to commit"
           git push
