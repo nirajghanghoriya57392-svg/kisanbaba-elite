@@ -1,0 +1,54 @@
+name: KisanBaba PRO Daily AI Worker
+
+on:
+  schedule:
+    # 20:00 IST is 14:30 UTC
+    - cron: '30 14 * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  run-ai:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: 60-Day Rolling Data Sync (APMC + Weather)
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          VITE_OGD_API_KEY: ${{ secrets.OGD_API_KEY }}
+          VITE_OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+        run: node scripts/kisanbaba_sync_engine.cjs
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas requests supabase
+
+      - name: Daily Inference & Prediction
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: python scripts/daily_inference.py
+
+      - name: Commit Intelligence Update
+        run: |
+          git config --local user.email "ai-worker@kisanbaba.in"
+          git config --local user.name "KisanBaba AI Worker"
+          git add public/data/ceda/*.json
+          git commit -m "🤖 Daily AI Intelligence Update [$(date +'%Y-%m-%d')]" || echo "No changes to commit"
+          git push
